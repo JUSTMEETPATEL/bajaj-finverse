@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BFHL Graph Analyzer
+
+A REST API + React frontend that accepts an array of node relationships, resolves hierarchical structures, detects cycles, and surfaces structured insights.
+
+Built with Next.js 16.2 (App Router), TypeScript, and Tailwind CSS. Deployed on Vercel.
+
+## API
+
+### `POST /api/bfhl`
+
+Accepts a JSON body with an array of directed edges and returns parsed hierarchies, cycle detection results, and a summary.
+
+**Request:**
+
+```json
+{ "data": ["A->B", "A->C", "B->D"] }
+```
+
+**Response:**
+
+```json
+{
+  "user_id": "meet_patel_24112005",
+  "email_id": "mp4668@srmist.edu.in",
+  "college_roll_number": "RA2311003020096",
+  "hierarchies": [
+    {
+      "root": "A",
+      "tree": { "A": { "B": { "D": {} }, "C": {} } },
+      "depth": 3
+    }
+  ],
+  "invalid_entries": [],
+  "duplicate_edges": [],
+  "summary": {
+    "total_trees": 1,
+    "total_cycles": 0,
+    "largest_tree_root": "A"
+  }
+}
+```
+
+### `GET /api/bfhl`
+
+Returns `{ "operation_code": 1 }`.
+
+> The evaluator endpoint `/bfhl` redirects to `/api/bfhl` automatically.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+cp .env.example .env.local
+# fill in USER_ID, EMAIL_ID, ROLL_NUMBER
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to use the frontend.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── api/bfhl/route.ts        # Controller (Edge Runtime)
+│   ├── page.tsx                  # Client-side SPA
+│   └── layout.tsx
+├── services/bfhl.service.ts      # Graph processing pipeline
+├── validators/node.validator.ts  # Edge validation rules
+├── utils/graph.utils.ts          # Union-Find, cycle detection, tree builder
+└── components/
+    ├── InputPanel.tsx
+    ├── HierarchyCard.tsx
+    ├── SummaryStrip.tsx
+    └── PillList.tsx
+```
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Connect the GitHub repo to Vercel. Add environment variables (`USER_ID`, `EMAIL_ID`, `ROLL_NUMBER`) in the Vercel dashboard. Deploy triggers automatically on push.
