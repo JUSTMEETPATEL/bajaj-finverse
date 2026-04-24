@@ -133,4 +133,4 @@ curl -s -L -X POST https://meetpatel-bfhl.vercel.app/bfhl \
 ## Deploy
 
 Connect the GitHub repo to Vercel. Add environment variables (`USER_ID`, `EMAIL_ID`, `ROLL_NUMBER`) in the Vercel dashboard. Deploy triggers automatically on push.
-# bajaj-finverse
+
