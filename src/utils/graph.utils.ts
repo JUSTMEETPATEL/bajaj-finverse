@@ -57,18 +57,25 @@ export function detectCycle(
 
 export type NestedTree = { [node: string]: NestedTree };
 
+function buildSubtree(
+  node: string,
+  children: Map<string, Set<string>>
+): NestedTree {
+  const result: NestedTree = {};
+  const childSet = children.get(node);
+  if (childSet) {
+    for (const child of [...childSet].sort()) {
+      result[child] = buildSubtree(child, children);
+    }
+  }
+  return result;
+}
+
 export function buildTree(
   root: string,
   children: Map<string, Set<string>>
 ): NestedTree {
-  const result: NestedTree = {};
-  const childSet = children.get(root);
-  if (childSet) {
-    for (const child of [...childSet].sort()) {
-      result[child] = buildTree(child, children);
-    }
-  }
-  return { [root]: result };
+  return { [root]: buildSubtree(root, children) };
 }
 
 export function calcDepth(
