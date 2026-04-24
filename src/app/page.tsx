@@ -6,13 +6,15 @@ import SummaryStrip from "@/components/SummaryStrip";
 import HierarchyCard from "@/components/HierarchyCard";
 import PillList from "@/components/PillList";
 
+import type { NestedTree } from "@/utils/graph.utils";
+
 interface BfhlResult {
   user_id: string;
   email_id: string;
   college_roll_number: string;
   hierarchies: {
     root: string;
-    tree?: Record<string, unknown>;
+    tree?: NestedTree;
     depth?: number;
     has_cycle?: true;
   }[];
