@@ -76,6 +76,60 @@ src/
     └── PillList.tsx
 ```
 
+## Testing
+
+### Simple tree
+
+```bash
+curl -s -X POST https://meetpatel-bfhl.vercel.app/api/bfhl \
+  -H 'Content-Type: application/json' \
+  -d '{"data": ["A->B", "A->C", "B->D"]}'
+```
+
+### Cycle detection
+
+```bash
+curl -s -X POST https://meetpatel-bfhl.vercel.app/api/bfhl \
+  -H 'Content-Type: application/json' \
+  -d '{"data": ["E->F", "F->G", "G->E"]}'
+```
+
+### Invalid entries and duplicates
+
+```bash
+curl -s -X POST https://meetpatel-bfhl.vercel.app/api/bfhl \
+  -H 'Content-Type: application/json' \
+  -d '{"data": ["A->B", "hello", "1->2", "A->A", "A->B", "A->C"]}'
+```
+
+### Mixed (trees + cycles + invalid + duplicates)
+
+```bash
+curl -s -X POST https://meetpatel-bfhl.vercel.app/api/bfhl \
+  -H 'Content-Type: application/json' \
+  -d '{"data": ["A->B", "A->C", "B->D", "hello", "A->B", "E->F", "F->E", "AB->C", ""]}'
+```
+
+### GET endpoint
+
+```bash
+curl -s https://meetpatel-bfhl.vercel.app/api/bfhl
+```
+
+### CORS check
+
+```bash
+curl -sI -X OPTIONS https://meetpatel-bfhl.vercel.app/api/bfhl | grep -i access-control
+```
+
+### Redirect (/bfhl -> /api/bfhl)
+
+```bash
+curl -s -L -X POST https://meetpatel-bfhl.vercel.app/bfhl \
+  -H 'Content-Type: application/json' \
+  -d '{"data": ["A->B"]}'
+```
+
 ## Deploy
 
 Connect the GitHub repo to Vercel. Add environment variables (`USER_ID`, `EMAIL_ID`, `ROLL_NUMBER`) in the Vercel dashboard. Deploy triggers automatically on push.
